@@ -260,7 +260,6 @@ $(document).ready(function() {
         let url = $(this).attr('href');
         let status = $('#status').val();
         url = url + "&status=" + status;
-        $(this).addClass('disabled');
         $.ajax({
             type: "GET",
             url: url,
@@ -272,8 +271,7 @@ $(document).ready(function() {
                     $("#statusMsg").hide();
                     $('#changeStatusModal').modal('hide');
                     $('.modal-backdrop').remove();
-                    $(this).removeClass('disabled');
-                }, 3000);
+                }, 1000);
             }
         });
     });
