@@ -216,14 +216,16 @@ $(document).ready(function() {
                 }),
                 success: function(data) {
                     var trHTML = '';
-                    $.each(data, function(vh) {
-                        if(vh % 2 == 0) {
+                    for(let i=0; i<data.length;i++) {
+                        if(i % 2 == 0) {
                             trHTML += '<tr>';
-                            trHTML += '<td><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2" id="'+data[vh].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[vh].registrationNumber+'</td>';
-                            trHTML += '<td><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2" id="'+data[vh+1].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[vh+1].registrationNumber+'</td>';
+                            trHTML += '<td><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2" id="'+data[i].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i].registrationNumber+'</td>';
+                            if(i<data.length-1) {
+                                trHTML += '<td><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2" id="'+data[i+1].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i+1].registrationNumber+'</td>';
+                            }
                             trHTML += '</tr>';
                         }
-                    });
+                    }
                     $('#studentTable').html(trHTML);
                     $('#studentSearch').val('');
                 },
