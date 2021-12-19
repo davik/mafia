@@ -272,6 +272,7 @@ $(document).ready(function() {
                     $("#statusMsg").hide();
                     $('#changeStatusModal').modal('hide');
                     $('.modal-backdrop').remove();
+                    $(this).removeClass('disabled');
                 }, 3000);
             }
         });
