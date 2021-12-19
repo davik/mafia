@@ -25,6 +25,9 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -133,17 +136,24 @@ public class WelcomeController {
 	@GetMapping(path = "/")
 	public String welcome(Map<String, Object> model, HttpServletRequest request) {
 		populateCommonPageFields(model, request);
+		// List<Vehicle> vhList = vehicleRepo.findwithLimit(40);
 
-		List<Vehicle> vhList = vehicleRepo.findAll();
-
-		model.put("vehicles", vhList);
+		// model.put("vehicles", vhList);
 		return "welcome";
 	}
 
 	@GetMapping(path = "/vehicleDetails")
 	@ResponseBody
-	public Vehicle vehicleDetails(@RequestParam("registrationNumber") String registrationNumber) {
-		Vehicle vh = vehicleRepo.findByRegistrationNumber(registrationNumber.toUpperCase());
+	public List<Vehicle> vehicleDetails(@RequestParam("registrationNumber") String registrationNumber) {
+		List<Vehicle> vh = vehicleRepo.findAllByRegistrationNumberLike(registrationNumber.toUpperCase());
+		return vh;
+	}
+
+	@GetMapping(path = "/vehicleQuery")
+	@ResponseBody
+	public List<Vehicle> vehicleQuery(@RequestParam("q") String queryString) {
+
+		List<Vehicle> vh = vehicleRepo.findAllByRegistrationNumberLike(queryString.toUpperCase());
 		return vh;
 	}
 
@@ -311,16 +321,39 @@ public class WelcomeController {
 	public String getVendorsPage(Map<String, Object> model, HttpServletRequest request) throws IOException {
 		populateCommonPageFields(model, request);
 
-		String inputFileName = "C:\\Users\\avik\\Downloads\\BAJAJ_REPO_ELIGIBLE_LIST_DEC21.csv";
-		FileReader fileReader = new FileReader(inputFileName);
-		CSVReader csvReader = new CSVReaderBuilder(fileReader).withSkipLines(1).build();
-		List<String[]> allData = csvReader.readAll();
+		String agent = "RKG";
+		String inputFileName = "";
+		FileReader fileReader = null;
+		CSVReader csvReader = null;
+		List<String[]> allData = null;
 		List<Vehicle> vehicles = new ArrayList<>();
-		for (String[] strings : allData) {
-			if (strings[3].equals(""))
-				continue;
-			Vehicle vh = new Vehicle(strings[3], strings[6], strings[1]);
-			vehicles.add(vh);
+
+		switch (agent) {
+			case "BAJAJ":
+				inputFileName = "C:\\Users\\avik\\Downloads\\BAJAJ_REPO_ELIGIBLE_LIST_DEC21.csv";
+				fileReader = new FileReader(inputFileName);
+				csvReader = new CSVReaderBuilder(fileReader).withSkipLines(1).build();
+				allData = csvReader.readAll();
+
+				for (String[] strings : allData) {
+					if (strings[3].equals(""))
+						continue;
+					Vehicle vh = new Vehicle(strings[3], strings[6], strings[1], agent);
+					vehicles.add(vh);
+				}
+				break;
+			case "RKG":
+				inputFileName = "C:\\Users\\avik\\Downloads\\RKG.csv";
+				fileReader = new FileReader(inputFileName);
+				csvReader = new CSVReaderBuilder(fileReader).withSkipLines(1).build();
+				allData = csvReader.readAll();
+				for (String[] strings : allData) {
+					if (strings[1].equals(""))
+						continue;
+					Vehicle vh = new Vehicle(strings[1], strings[2], "", agent);
+					vehicles.add(vh);
+				}
+				break;
 		}
 		vehicleRepo.saveAll(vehicles);
 		return "vendors";

@@ -59,9 +59,10 @@ function fetchvehicleDetail(id) {
         }),
         success: function(data) {
             // var json = $.parseJSON(data);
-            $("#registrationNumber").html(data.registrationNumber);
-            $("#customerName").html(data.customerName);
-            $("#assetDesc").html(data.assetDesc);
+            $("#registrationNumber").html(data[0].registrationNumber);
+            $("#customerName").html(data[0].customerName);
+            $("#assetDesc").html(data[0].assetDesc);
+            $("#agent").html(data[0].agent);
         },
         contentType: "application/json"
     });
@@ -207,9 +208,28 @@ $(document).ready(function() {
 
     $("#studentSearch").on("keyup", function() {
         let value = $(this).val().toLowerCase();
-        $("#studentTable tr").filter(function() {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
+        if(value.length == 4) {
+            $.ajax({
+                type: "GET",
+                url: '/vehicleQuery?' + $.param({
+                    q: value
+                }),
+                success: function(data) {
+                    var trHTML = '';
+                    $.each(data, function(vh) {
+                        if(vh % 2 == 0) {
+                            trHTML += '<tr>';
+                            trHTML += '<td><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2" id="'+data[vh].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[vh].registrationNumber+'</td>';
+                            trHTML += '<td><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2" id="'+data[vh+1].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[vh+1].registrationNumber+'</td>';
+                            trHTML += '</tr>';
+                        }
+                    });
+                    $('#studentTable').html(trHTML);
+                    $('#studentSearch').val('');
+                },
+                contentType: "application/json"
+            });
+        }
     });
 
     $("#product").on("keyup", function() {

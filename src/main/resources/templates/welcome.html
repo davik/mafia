@@ -14,19 +14,8 @@
 						<input type="text" class="form-control" placeholder="Search.." id="studentSearch">
 					</div>
 					<table class="table table-striped">
-						<!-- <thead>
-							<tr>
-								<th>ID</th>
-								<th>Name</th>
-								<th>Course</th>
-								<th>Subject</th>
-								<th>Session</th>
-								<th>Mobile</th>
-								<th>Course Fee</th>
-							</tr>
-						</thead> -->
 						<tbody id ="studentTable">
-							{{#vehicles}}
+							<!-- {{#vehicles}}
 							<tr>
 								<td>
 									<span data-toggle="modal" data-target="#changeStatusModal" data-id="{{id}}">
@@ -36,10 +25,9 @@
 										</a>
 									</span>
 								</td>
-								<!-- <td><a href="#" id="{{registrationNumber}}" onclick="fetchPaymentDetail(this.id);">{{registrationNumber}}</a></td> -->
 								<td>{{customerName}}</td>
 							</tr>
-							{{/vehicles}}
+							{{/vehicles}} -->
 						</tbody>
 					</table>
 				</div>
@@ -73,6 +61,10 @@
 						<tr>
 							<td>Asset Description</td>
 							<td id="assetDesc"></td>
+						</tr>
+						<tr>
+							<td>Agent</td>
+							<td id="agent"></td>
 						</tr>
 						
 					</tbody>
