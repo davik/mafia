@@ -63,11 +63,22 @@ function fetchvehicleDetail(id) {
             $("#customerName").html(data[0].customerName);
             $("#assetDesc").html(data[0].assetDesc);
             $("#agent").html(data[0].agent);
+            $("#currentStatus").html(data[0].status);
+
+            let url = "/changeStatus?registrationNumber=" + data[0].registrationNumber;
+            $('.change').attr({href: url});
         },
         contentType: "application/json"
     });
 }
 
+function bgcolor(status)
+{
+    if (status == "RED")
+    { return "bg-danger"; }
+    else if (status == "GREEN")
+    { return "bg-success"; }
+}
 $(document).ready(function() {
 
     $("#formPayment").hide();
@@ -219,9 +230,9 @@ $(document).ready(function() {
                     for(let i=0; i<data.length;i++) {
                         if(i % 2 == 0) {
                             trHTML += '<tr>';
-                            trHTML += '<td><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2" id="'+data[i].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i].registrationNumber+'</td>';
+                            trHTML += '<td class='+ bgcolor(data[i].status) +'><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="'+data[i].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i].registrationNumber+'</td>';
                             if(i<data.length-1) {
-                                trHTML += '<td><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2" id="'+data[i+1].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i+1].registrationNumber+'</td>';
+                                trHTML += '<td class='+ bgcolor(data[i+1].status) +'><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="'+data[i+1].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i+1].registrationNumber+'</td>';
                             }
                             trHTML += '</tr>';
                         }
@@ -232,6 +243,38 @@ $(document).ready(function() {
                 contentType: "application/json"
             });
         }
+    });
+
+    $("body").on('show.bs.modal', "#changeStatusModal", function(event) {
+        $('#reverseMsg').hide();
+        let button = $(event.relatedTarget); // Button that triggered the modal
+        let id = button.data('id'); // Extract info from data-* attributes
+        let url = "/changeStatus?registrationNumber=" + id;
+
+        let modal = $(this);
+        modal.find('.change').attr({href: url});
+    });
+
+    $("body").on('click', "#changeStatus", function(event) {
+        event.preventDefault();
+        let url = $(this).attr('href');
+        let status = $('#status').val();
+        url = url + "&status=" + status;
+        $(this).addClass('disabled');
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(data) {
+                $("#statusMsg").show();
+                $('#statusMsg').html(data);
+                $('.clearit').val('');
+                setTimeout(function() {
+                    $("#statusMsg").hide();
+                    $('#changeStatusModal').modal('hide');
+                    $('.modal-backdrop').remove();
+                }, 3000);
+            }
+        });
     });
 
     $("#product").on("keyup", function() {

@@ -66,12 +66,33 @@
 							<td>Agent</td>
 							<td id="agent"></td>
 						</tr>
+						<tr>
+							<td>Current Status</td>
+							<td id="currentStatus"></td>
+						</tr>
 						
 					</tbody>
 				</table>
 			</div>
+			{{#admin}}
+			<div class="input-group mb-3 pt-4">
+				<div class="input-group-prepend">
+				  <label class="input-group-text" for="status">Change Status to</label>
+				</div>
+				<select class="custom-select" id="status">
+					<option value="WHITE">WHITE</option>
+					<option value="RED" class="bg-danger">RED</option>
+					<option value="GREEN" class="bg-success">GREEN</option>
+					
+				</select>
+			</div>
+			<div id="statusMsg" class="pt-2"></div>
+			{{/admin}}
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				{{#admin}}
+				<a class="btn btn-warning change" id="changeStatus">Change</a>
+				{{/admin}}
 			</div>
 		</div>
 	</div>

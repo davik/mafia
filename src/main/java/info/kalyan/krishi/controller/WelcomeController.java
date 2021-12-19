@@ -136,9 +136,12 @@ public class WelcomeController {
 	@GetMapping(path = "/")
 	public String welcome(Map<String, Object> model, HttpServletRequest request) {
 		populateCommonPageFields(model, request);
-		// List<Vehicle> vhList = vehicleRepo.findwithLimit(40);
+		if (request.getRemoteUser().equals("admin")) {
+			model.put("admin", true);
+		} else {
+			model.put("admin", false);
+		}
 
-		// model.put("vehicles", vhList);
 		return "welcome";
 	}
 
@@ -157,6 +160,20 @@ public class WelcomeController {
 		List<Vehicle> vh = vehicleRepo
 				.findAllByRegistrationNumberLikeOrderByRegistrationNumberAsc(queryString.toUpperCase());
 		return vh;
+	}
+
+	@GetMapping(path = "/changeStatus")
+	@ResponseBody
+	public String changeStatus(@RequestParam("registrationNumber") String registrationNumber,
+			@RequestParam("status") Vehicle.Status status) {
+		List<Vehicle> vh = vehicleRepo
+				.findAllByRegistrationNumberLikeOrderByRegistrationNumberAsc(registrationNumber.toUpperCase());
+		for (Vehicle v : vh) {
+			v.status = status;
+			vehicleRepo.save(v);
+		}
+
+		return "Status Changed";
 	}
 
 	// test 5xx errors
@@ -340,7 +357,7 @@ public class WelcomeController {
 				for (String[] strings : allData) {
 					if (strings[3].equals(""))
 						continue;
-					Vehicle vh = new Vehicle(strings[3].trim(), strings[6], strings[1], agent);
+					Vehicle vh = new Vehicle(strings[3].trim(), strings[6], strings[1], agent, Vehicle.Status.WHITE);
 					vehicles.add(vh);
 				}
 				break;
@@ -352,7 +369,7 @@ public class WelcomeController {
 				for (String[] strings : allData) {
 					if (strings[1].equals(""))
 						continue;
-					Vehicle vh = new Vehicle(strings[1].trim(), strings[2], "", agent);
+					Vehicle vh = new Vehicle(strings[1].trim(), strings[2], "", agent, Vehicle.Status.WHITE);
 					vehicles.add(vh);
 				}
 				break;
