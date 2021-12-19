@@ -145,7 +145,8 @@ public class WelcomeController {
 	@GetMapping(path = "/vehicleDetails")
 	@ResponseBody
 	public List<Vehicle> vehicleDetails(@RequestParam("registrationNumber") String registrationNumber) {
-		List<Vehicle> vh = vehicleRepo.findAllByRegistrationNumberLike(registrationNumber.toUpperCase());
+		List<Vehicle> vh = vehicleRepo
+				.findAllByRegistrationNumberLikeOrderByRegistrationNumberAsc(registrationNumber.toUpperCase());
 		return vh;
 	}
 
@@ -153,7 +154,8 @@ public class WelcomeController {
 	@ResponseBody
 	public List<Vehicle> vehicleQuery(@RequestParam("q") String queryString) {
 
-		List<Vehicle> vh = vehicleRepo.findAllByRegistrationNumberLike(queryString.toUpperCase());
+		List<Vehicle> vh = vehicleRepo
+				.findAllByRegistrationNumberLikeOrderByRegistrationNumberAsc(queryString.toUpperCase());
 		return vh;
 	}
 
@@ -321,7 +323,7 @@ public class WelcomeController {
 	public String getVendorsPage(Map<String, Object> model, HttpServletRequest request) throws IOException {
 		populateCommonPageFields(model, request);
 
-		String agent = "RKG";
+		String agent = "BAJAJ";
 		String inputFileName = "";
 		FileReader fileReader = null;
 		CSVReader csvReader = null;
@@ -338,7 +340,7 @@ public class WelcomeController {
 				for (String[] strings : allData) {
 					if (strings[3].equals(""))
 						continue;
-					Vehicle vh = new Vehicle(strings[3], strings[6], strings[1], agent);
+					Vehicle vh = new Vehicle(strings[3].trim(), strings[6], strings[1], agent);
 					vehicles.add(vh);
 				}
 				break;
@@ -350,7 +352,7 @@ public class WelcomeController {
 				for (String[] strings : allData) {
 					if (strings[1].equals(""))
 						continue;
-					Vehicle vh = new Vehicle(strings[1], strings[2], "", agent);
+					Vehicle vh = new Vehicle(strings[1].trim(), strings[2], "", agent);
 					vehicles.add(vh);
 				}
 				break;

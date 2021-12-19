@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface VehicleRepository extends MongoRepository<Vehicle, String> {
     Vehicle findByRegistrationNumber(String registrationNumber);
 
-    List<Vehicle> findAllByRegistrationNumberLike(String registrationNumber);
+    List<Vehicle> findAllByRegistrationNumberLikeOrderByRegistrationNumberAsc(String registrationNumber);
 }
