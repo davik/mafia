@@ -371,14 +371,15 @@ $(document).ready(function() {
         e.preventDefault();
         let file = $('#customFile')[0].files[0];
         let upload = new Upload(file);
+        upload.doUpload();
         // maybe check size or type here with upload.getSize() and upload.getType()
-        if( upload.getType() == "text/csv" ) {  // only allow csv
+        // if( upload.getType() == "text/csv" ) {  // only allow csv
              // execute upload
-            upload.doUpload();
-        }
-        else {
-            alert('Only CSV files are allowed');
-        }
+            
+        // }
+        // else {
+            // alert('Only CSV files are allowed');
+        // }
     });
 
     $("#product").on("keyup", function() {
