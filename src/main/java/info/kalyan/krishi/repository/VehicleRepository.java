@@ -12,4 +12,6 @@ public interface VehicleRepository extends MongoRepository<Vehicle, String> {
     Vehicle findByRegistrationNumber(String registrationNumber);
 
     List<Vehicle> findAllByRegistrationNumberLikeOrderByRegistrationNumberAsc(String registrationNumber);
+
+    List<Vehicle> findAllByStatusIn(List<Vehicle.Status> status);
 }

@@ -1,6 +1,7 @@
 package info.kalyan.krishi.controller;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,6 +9,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,9 +28,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -143,6 +144,52 @@ public class WelcomeController {
 		}
 
 		return "welcome";
+	}
+
+	@GetMapping(path = "/upload")
+	public String upload(Map<String, Object> model, HttpServletRequest request) {
+		populateCommonPageFields(model, request);
+		if (request.getRemoteUser().equals("admin")) {
+			model.put("admin", true);
+		} else {
+			model.put("admin", false);
+		}
+
+		return "upload";
+	}
+
+	@PostMapping(value = "/uploadFile")
+	@ResponseBody
+	public String uploadFile(@RequestParam("file") MultipartFile file)
+			throws UnsupportedEncodingException, IOException {
+		BufferedReader fileReader = new BufferedReader(new InputStreamReader(file.getInputStream(), "UTF-8"));
+		CSVReader csvReader = new CSVReaderBuilder(fileReader).withSkipLines(1).build();
+
+		List<String[]> allData = csvReader.readAll();
+		List<Vehicle> vehicles = new ArrayList<>();
+
+		try {
+			for (String[] strings : allData) {
+				if (strings[0].equals(""))
+					continue;
+				Vehicle vh = new Vehicle(strings[0].trim(), strings[1].trim(), strings[2].trim(), strings[3].trim(),
+						Vehicle.Status.WHITE);
+				vehicles.add(vh);
+			}
+		} catch (Exception e) {
+			return "Error in uploading file or wrong file format";
+		}
+
+		vehicleRepo.saveAll(vehicles);
+		return "File uploaded successfully";
+	}
+
+	@GetMapping(path = "/markedVehicles")
+	@ResponseBody
+	public List<Vehicle> markedVehicles() {
+
+		List<Vehicle> vhs = vehicleRepo.findAllByStatusIn(Arrays.asList(Vehicle.Status.RED, Vehicle.Status.GREEN));
+		return vhs;
 	}
 
 	@GetMapping(path = "/vehicleDetails")

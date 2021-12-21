@@ -6,6 +6,68 @@ $.ajaxSetup({
     }
 });
 
+// Upload class starts here
+var Upload = function (file) {
+    this.file = file;
+};
+
+Upload.prototype.getType = function() {
+    return this.file.type;
+};
+Upload.prototype.getSize = function() {
+    return this.file.size;
+};
+Upload.prototype.getName = function() {
+    return this.file.name;
+};
+Upload.prototype.doUpload = function () {
+    var that = this;
+    var formData = new FormData();
+
+    // add assoc key values, this will be posts values
+    formData.append("file", this.file, this.getName());
+    formData.append("upload_file", true);
+
+    $.ajax({
+        type: "POST",
+        url: "uploadFile",
+        xhr: function () {
+            var myXhr = $.ajaxSettings.xhr();
+            if (myXhr.upload) {
+                myXhr.upload.addEventListener('progress', that.progressHandling, false);
+            }
+            return myXhr;
+        },
+        success: function (data) {
+            $('#msg').html(data);
+        },
+        error: function (error) {
+            console.log(error);
+        },
+        async: true,
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        timeout: 60000
+    });
+};
+
+Upload.prototype.progressHandling = function (event) {
+    var percent = 0;
+    var position = event.loaded || event.position;
+    var total = event.total;
+    var progress_bar_id = "#progress-wrp";
+    if (event.lengthComputable) {
+        percent = Math.ceil(position / total * 100);
+    }
+    // update progressbars classes so it fits your code
+    $(progress_bar_id + " .progress-bar").css("width", +percent + "%");
+    $(progress_bar_id + " .status").text(percent + "%");
+};
+// Upload class ends here
+
+
 function fetchAccountDetail(id) {
     $('#nav-profile-tab').trigger('click');
     $('#id').val(id);
@@ -80,6 +142,27 @@ function bgcolor(status)
     { return "bg-success"; }
 }
 $(document).ready(function() {
+
+    $.ajax({
+        type: "GET",
+        url: '/markedVehicles',
+        success: function(data) {
+            var trHTML = '';
+            for(let i=0; i<data.length;i++) {
+                if(i % 2 == 0) {
+                    trHTML += '<tr>';
+                    trHTML += '<td class='+ bgcolor(data[i].status) +'><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="'+data[i].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i].registrationNumber+'</td>';
+                    if(i<data.length-1) {
+                        trHTML += '<td class='+ bgcolor(data[i+1].status) +'><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="'+data[i+1].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i+1].registrationNumber+'</td>';
+                    }
+                    trHTML += '</tr>';
+                }
+            }
+            $('#studentTable').html(trHTML);
+            $('#studentSearch').val('');
+        },
+        contentType: "application/json"
+    });
 
     $("#formPayment").hide();
     // Listen to click event on the submit button
@@ -274,6 +357,28 @@ $(document).ready(function() {
                 }, 1000);
             }
         });
+    });
+
+
+    $('#customFile').on('change',function(){
+        //get the file name
+        var fileName = $(this).val();
+        //replace the "Choose a file" label
+        $(this).next('.custom-file-label').html(fileName);
+    });
+
+    $('#upload').on('click', function(e) {
+        e.preventDefault();
+        let file = $('#customFile')[0].files[0];
+        let upload = new Upload(file);
+        // maybe check size or type here with upload.getSize() and upload.getType()
+        if( upload.getType() == "text/csv" ) {  // only allow csv
+             // execute upload
+            upload.doUpload();
+        }
+        else {
+            alert('Only CSV files are allowed');
+        }
     });
 
     $("#product").on("keyup", function() {

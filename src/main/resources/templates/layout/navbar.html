@@ -34,14 +34,16 @@
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-              <a class="nav-link" href="#top">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
           </li>
+          {{#admin}}
           <li class="nav-item">
-              <a class="nav-link" href="#top">Features</a>
+              <a class="nav-link" href="/upload">Upload</a>
           </li>
-          <li class="nav-item">
+          {{/admin}}
+          <!-- <li class="nav-item">
               <a class="nav-link" href="#top">Pricing</a>
-          </li>
+          </li> -->
           <!-- This menu is hidden in bigger devices with d-sm-none. 
          The sidebar isn't proper for smaller screens imo, so this dropdown menu can keep all the useful sidebar itens exclusively for smaller screens  -->
           <!-- <li class="nav-item dropdown d-sm-block d-md-none">
