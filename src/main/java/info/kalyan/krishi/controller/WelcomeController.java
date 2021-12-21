@@ -172,7 +172,8 @@ public class WelcomeController {
 			for (String[] strings : allData) {
 				if (strings[0].equals(""))
 					continue;
-				Vehicle vh = new Vehicle(strings[0].trim(), strings[1].trim(), strings[2].trim(), strings[3].trim(),
+				Vehicle vh = new Vehicle(strings[0].trim().toUpperCase(), strings[1].trim(), strings[2].trim(),
+						strings[3].trim(),
 						Vehicle.Status.WHITE);
 				vehicles.add(vh);
 			}
