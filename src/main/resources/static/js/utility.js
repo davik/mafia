@@ -1,6 +1,6 @@
 
 $.ajaxSetup({
-    beforeSend: function(xhr) {
+    beforeSend: function (xhr) {
         let token = $("meta[name='_csrf']").attr("content");
         xhr.setRequestHeader('X-CSRF-TOKEN', token);
     }
@@ -11,13 +11,13 @@ var Upload = function (file) {
     this.file = file;
 };
 
-Upload.prototype.getType = function() {
+Upload.prototype.getType = function () {
     return this.file.type;
 };
-Upload.prototype.getSize = function() {
+Upload.prototype.getSize = function () {
     return this.file.size;
 };
-Upload.prototype.getName = function() {
+Upload.prototype.getName = function () {
     return this.file.name;
 };
 Upload.prototype.doUpload = function () {
@@ -80,7 +80,7 @@ function fetchProductDetail(id) {
     $('#productIdSearch').click();
 }
 
-function getVoucherForm () {
+function getVoucherForm() {
     if ($("#voucherType").val() == "PURCHASE" || $("#voucherType").val() == "SALE") {
         $("#formPayment").addClass("d-none");
         $("#formPurchase").removeClass("d-none");
@@ -91,20 +91,20 @@ function getVoucherForm () {
 }
 
 function changeAncAttSess() {
-    $('#to').attr({min: $('#from').val()});
+    $('#to').attr({ min: $('#from').val() });
     if ($('#from').val() && $('#to').val()) {
         $('#stockReport').removeClass("disabled");
     }
     let url = '/stockReport?' + $.param({
-                from: $('#from').val(),
-                to: $('#to').val()
-            });
-    $('#stockReport').attr({target: '_blank', href: url});
+        from: $('#from').val(),
+        to: $('#to').val()
+    });
+    $('#stockReport').attr({ target: '_blank', href: url });
 }
 
 function changeAccPeriod() {
-    $('#to').attr({min: $('#from').val()});
-    $('#to').attr({max: $('#from').attr('max')});
+    $('#to').attr({ min: $('#from').val() });
+    $('#to').attr({ max: $('#from').attr('max') });
     if ($('#from').val() && $('#to').val()) {
         $('#accDetailButton').removeAttr("disabled");
     } else {
@@ -117,43 +117,40 @@ function fetchvehicleDetail(id) {
     $.ajax({
         type: "GET",
         url: '/vehicleDetails?' + $.param({
-            registrationNumber: id
+            id: id
         }),
-        success: function(data) {
+        success: function (data) {
             // var json = $.parseJSON(data);
-            $("#registrationNumber").html(data[0].registrationNumber);
-            $("#customerName").html(data[0].customerName);
-            $("#assetDesc").html(data[0].assetDesc);
-            $("#agent").html(data[0].agent);
-            $("#currentStatus").html(data[0].status);
+            $("#registrationNumber").html(data.registrationNumber);
+            $("#customerName").html(data.customerName);
+            $("#assetDesc").html(data.assetDesc);
+            $("#agent").html(data.agent);
+            $("#currentStatus").html(data.status);
 
-            let url = "/changeStatus?registrationNumber=" + data[0].registrationNumber;
-            $('.change').attr({href: url});
+            let url = "/changeStatus?id=" + data.id;
+            $('.change').attr({ href: url });
         },
         contentType: "application/json"
     });
 }
 
-function bgcolor(status)
-{
-    if (status == "RED")
-    { return "bg-danger"; }
-    else if (status == "GREEN")
-    { return "bg-success"; }
+function bgcolor(status) {
+    if (status == "RED") { return "bg-danger"; }
+    else if (status == "GREEN") { return "bg-success"; }
 }
-$(document).ready(function() {
+$(document).ready(function () {
 
     $.ajax({
         type: "GET",
         url: '/markedVehicles',
-        success: function(data) {
+        success: function (data) {
             var trHTML = '';
-            for(let i=0; i<data.length;i++) {
-                if(i % 2 == 0) {
+            for (let i = 0; i < data.length; i++) {
+                if (i % 2 == 0) {
                     trHTML += '<tr>';
-                    trHTML += '<td class='+ bgcolor(data[i].status) +'><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="'+data[i].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i].registrationNumber+'</td>';
-                    if(i<data.length-1) {
-                        trHTML += '<td class='+ bgcolor(data[i+1].status) +'><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="'+data[i+1].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i+1].registrationNumber+'</td>';
+                    trHTML += '<td class=' + bgcolor(data[i].status) + '><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="' + data[i].id + '" onclick="fetchvehicleDetail(this.id);">' + data[i].registrationNumber + '</td>';
+                    if (i < data.length - 1) {
+                        trHTML += '<td class=' + bgcolor(data[i + 1].status) + '><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="' + data[i + 1].id + '" onclick="fetchvehicleDetail(this.id);">' + data[i + 1].registrationNumber + '</td>';
                     }
                     trHTML += '</tr>';
                 }
@@ -166,7 +163,7 @@ $(document).ready(function() {
 
     $("#formPayment").hide();
     // Listen to click event on the submit button
-    $('#button').click(function(e) {
+    $('#button').click(function (e) {
 
         e.preventDefault();
 
@@ -183,14 +180,14 @@ $(document).ready(function() {
             type: "POST",
             url: "/create",
             data: JSON.stringify(vendor),
-            success: function(data) {
+            success: function (data) {
                 $("#msg").show();
                 $('#msg').html(data);
                 $('html,body').animate({
                     scrollTop: $("#msg").offset().top
                 }, 'slow');
                 $('.clearit').val('');
-                setTimeout(function() {
+                setTimeout(function () {
                     $("#msg").hide();
                 }, 3000);
             },
@@ -198,7 +195,7 @@ $(document).ready(function() {
         });
     });
 
-    $('#whButton').click(function(e) {
+    $('#whButton').click(function (e) {
 
         e.preventDefault();
 
@@ -211,14 +208,14 @@ $(document).ready(function() {
             type: "POST",
             url: "/createWarehouse",
             data: JSON.stringify(warehouse),
-            success: function(data) {
+            success: function (data) {
                 $("#msg").show();
                 $('#msg').html(data);
                 $('html,body').animate({
                     scrollTop: $("#msg").offset().top
                 }, 'slow');
                 $('.clearit').val('');
-                setTimeout(function() {
+                setTimeout(function () {
                     $("#msg").hide();
                 }, 3000);
             },
@@ -226,11 +223,11 @@ $(document).ready(function() {
         });
     });
 
-    $('#pdButton').click(function(e) {
+    $('#pdButton').click(function (e) {
 
         e.preventDefault();
         let openingStocks = [];
-        $('.stock').each(function(i, item) {
+        $('.stock').each(function (i, item) {
             let whName = $(item).attr('id').substring(5);
             let stockVal = $(item).val();
             let stock = {
@@ -249,14 +246,14 @@ $(document).ready(function() {
             type: "POST",
             url: "/createProduct",
             data: JSON.stringify(product),
-            success: function(data) {
+            success: function (data) {
                 $("#msg").show();
                 $('#msg').html(data);
                 $('html,body').animate({
                     scrollTop: $("#msg").offset().top
                 }, 'slow');
                 $('.clearit').val('');
-                setTimeout(function() {
+                setTimeout(function () {
                     $("#msg").hide();
                 }, 3000);
             },
@@ -264,12 +261,12 @@ $(document).ready(function() {
         });
     });
 
-    $('#idSearch').click(function(e) {
+    $('#idSearch').click(function (e) {
         e.preventDefault();
-        accountDetailAjax();        
+        accountDetailAjax();
     });
-    
-    $('#productIdSearch').click(function(e) {
+
+    $('#productIdSearch').click(function (e) {
         console.log("here");
         e.preventDefault();
         $.ajax({
@@ -277,45 +274,45 @@ $(document).ready(function() {
             url: '/stockDetails?' + $.param({
                 id: $('#id').val()
             }),
-            success: function(data) {
+            success: function (data) {
                 $('#stockDetail').html(data);
-                $(".convertTime").each(function() {
+                $(".convertTime").each(function () {
                     let utcDate = $(this).text();
                     let localDate = new Date(utcDate);
                     let x = localDate.toLocaleDateString('en-GB', {
                         day: '2-digit', month: 'short', year: 'numeric'
-                      }).replace(/ /g, '-');
+                    }).replace(/ /g, '-');
                     $(this).text(x);
                 });
-                $('.data-row').each(function() {
+                $('.data-row').each(function () {
                     let voucherType = $(this).find(".vType").text();
                     if (voucherType == "PURCHASE" || voucherType == "RECEIPT") {
                         // $(this).addClass("table-danger");
                     } else if (voucherType == "PAYMENT" || voucherType == "SALE") {
                         // $(this).addClass("table-success");
                     }
-                 });
+                });
             },
             contentType: "application/json"
         });
     });
 
-    $("#studentSearch").on("keyup", function() {
+    $("#studentSearch").on("keyup", function () {
         let value = $(this).val().toLowerCase();
-        if(value.length == 4) {
+        if (value.length == 4) {
             $.ajax({
                 type: "GET",
                 url: '/vehicleQuery?' + $.param({
                     q: value
                 }),
-                success: function(data) {
+                success: function (data) {
                     var trHTML = '';
-                    for(let i=0; i<data.length;i++) {
-                        if(i % 2 == 0) {
+                    for (let i = 0; i < data.length; i++) {
+                        if (i % 2 == 0) {
                             trHTML += '<tr>';
-                            trHTML += '<td class='+ bgcolor(data[i].status) +'><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="'+data[i].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i].registrationNumber+'</td>';
-                            if(i<data.length-1) {
-                                trHTML += '<td class='+ bgcolor(data[i+1].status) +'><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="'+data[i+1].registrationNumber+'" onclick="fetchvehicleDetail(this.id);">'+data[i+1].registrationNumber+'</td>';
+                            trHTML += '<td class=' + bgcolor(data[i].status) + '><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="' + data[i].id + '" onclick="fetchvehicleDetail(this.id);">' + data[i].registrationNumber + '</td>';
+                            if (i < data.length - 1) {
+                                trHTML += '<td class=' + bgcolor(data[i + 1].status) + '><span data-toggle="modal" data-target="#changeStatusModal"><a href="#" data-toggle="tooltip" data-placement="top" title="Archive Student" class="px-2 text-dark font-weight-bold" id="' + data[i + 1].id + '" onclick="fetchvehicleDetail(this.id);">' + data[i + 1].registrationNumber + '</td>';
                             }
                             trHTML += '</tr>';
                         }
@@ -328,17 +325,17 @@ $(document).ready(function() {
         }
     });
 
-    $("body").on('show.bs.modal', "#changeStatusModal", function(event) {
+    $("body").on('show.bs.modal', "#changeStatusModal", function (event) {
         $('#reverseMsg').hide();
         let button = $(event.relatedTarget); // Button that triggered the modal
         let id = button.data('id'); // Extract info from data-* attributes
         let url = "/changeStatus?registrationNumber=" + id;
 
         let modal = $(this);
-        modal.find('.change').attr({href: url});
+        modal.find('.change').attr({ href: url });
     });
 
-    $("body").on('click', "#changeStatus", function(event) {
+    $("body").on('click', "#changeStatus", function (event) {
         event.preventDefault();
         let url = $(this).attr('href');
         let status = $('#status').val();
@@ -346,11 +343,11 @@ $(document).ready(function() {
         $.ajax({
             type: "GET",
             url: url,
-            success: function(data) {
+            success: function (data) {
                 $("#statusMsg").show();
                 $('#statusMsg').html(data);
                 $('.clearit').val('');
-                setTimeout(function() {
+                setTimeout(function () {
                     $("#statusMsg").hide();
                     $('#changeStatusModal').modal('hide');
                     $('.modal-backdrop').remove();
@@ -360,47 +357,47 @@ $(document).ready(function() {
     });
 
 
-    $('#customFile').on('change',function(){
+    $('#customFile').on('change', function () {
         //get the file name
         var fileName = $(this).val();
         //replace the "Choose a file" label
         $(this).next('.custom-file-label').html(fileName);
     });
 
-    $('#upload').on('click', function(e) {
+    $('#upload').on('click', function (e) {
         e.preventDefault();
         let file = $('#customFile')[0].files[0];
         let upload = new Upload(file);
         upload.doUpload();
         // maybe check size or type here with upload.getSize() and upload.getType()
         // if( upload.getType() == "text/csv" ) {  // only allow csv
-             // execute upload
-            
+        // execute upload
+
         // }
         // else {
-            // alert('Only CSV files are allowed');
+        // alert('Only CSV files are allowed');
         // }
     });
 
-    $("#product").on("keyup", function() {
+    $("#product").on("keyup", function () {
         let value = $(this).val().toLowerCase();
-        $(".product-value").filter(function() {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        $(".product-value").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
-    
-    $("body").on('keyup', ".price", function() {
-        $('#value').attr('value', function() {
+
+    $("body").on('keyup', ".price", function () {
+        $('#value').attr('value', function () {
             let quantity = $('#quantity').val()
             let rate = $('#rate').val();
             return quantity * rate;
         });
     });
 
-    $("body").on('click', "#submitVoucher", function() {
+    $("body").on('click', "#submitVoucher", function () {
         let voucher = new Object();
         console.log($('#voucherId').val());
-        if($('#voucherId').val() != '')
+        if ($('#voucherId').val() != '')
             return;
         voucher.voucherType = $("#voucherType").val();
         voucher.transactionDate = $("#transactionDate").val();
@@ -423,11 +420,11 @@ $(document).ready(function() {
                 id: $('#id').val()
             }),
             data: JSON.stringify(voucher),
-            success: function(data) {
+            success: function (data) {
                 $("#msg").show();
                 $('#msg').html(data);
                 $('.clearit').val('');
-                setTimeout(function() {
+                setTimeout(function () {
                     $("#msg").hide();
                     $('#exampleModalCenter').modal('hide');
                     $('.modal-backdrop').remove();
@@ -437,21 +434,21 @@ $(document).ready(function() {
             contentType: "application/json"
         });
     });
-    
-    $("body").on('show.bs.modal', "#exampleModalCenter", function(event) {
+
+    $("body").on('show.bs.modal', "#exampleModalCenter", function (event) {
         // Note: modal converts transactionInfo --> transactioninfo (all lower case)
         $('#msg').hide();
         setFstDropdown();
         let today = new Date();
-        let todayStr = today.toISOString().substring(0,10);
-        $('#transactionDate').attr({max: todayStr});
+        let todayStr = today.toISOString().substring(0, 10);
+        $('#transactionDate').attr({ max: todayStr });
 
 
         let trig = $(event.relatedTarget);
 
-        
+
         $('#exampleModalLongTitle').text(trig.data('action'));
-        if(trig.data('action') != 'Edit Voucher') {
+        if (trig.data('action') != 'Edit Voucher') {
             return;
         }
 
@@ -459,17 +456,17 @@ $(document).ready(function() {
         $('#voucherType').trigger("change");
 
         $('.product .fstlist').find('div[data-value="001"]').removeClass("selected");
-        let prodSelector = $('.product .fstlist').find('div[data-value="'+trig.data('id')+'"]');
+        let prodSelector = $('.product .fstlist').find('div[data-value="' + trig.data('id') + '"]');
         prodSelector.addClass("selected");
         $('.product .fstselected').text(prodSelector.text());
 
         $('.warehouse .fstlist').find('div[data-value="001"]').removeClass("selected");
-        let whSelector = $('.warehouse .fstlist').find('div[data-value="'+trig.data('warehouse')+'"]');
+        let whSelector = $('.warehouse .fstlist').find('div[data-value="' + trig.data('warehouse') + '"]');
         whSelector.addClass("selected");
         $('.warehouse .fstselected').text(whSelector.text());
-        
+
         setFstDropdown();
-        $('#transactionDate').val(trig.data('transactiondate').substring(0,10));
+        $('#transactionDate').val(trig.data('transactiondate').substring(0, 10));
         $('#transactionInfo').val(trig.data('transactioninfo'));
         $('#quantity').val(trig.data('quantity'));
         $('#rate').val(trig.data('rate'));
@@ -478,5 +475,5 @@ $(document).ready(function() {
         $('#mode').val(trig.data('mode'));
         $('#voucherId').text(trig.data('voucherid'));
     });
-        
+
 });

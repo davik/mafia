@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -188,16 +187,14 @@ public class WelcomeController {
 	@GetMapping(path = "/markedVehicles")
 	@ResponseBody
 	public List<Vehicle> markedVehicles() {
-
 		List<Vehicle> vhs = vehicleRepo.findAllByStatusIn(Arrays.asList(Vehicle.Status.RED, Vehicle.Status.GREEN));
 		return vhs;
 	}
 
 	@GetMapping(path = "/vehicleDetails")
 	@ResponseBody
-	public List<Vehicle> vehicleDetails(@RequestParam("registrationNumber") String registrationNumber) {
-		List<Vehicle> vh = vehicleRepo
-				.findAllByRegistrationNumberLikeOrderByRegistrationNumberAsc(registrationNumber.toUpperCase());
+	public Vehicle vehicleDetails(@RequestParam("id") String id) {
+		Vehicle vh = vehicleRepo.findById(id).get();
 		return vh;
 	}
 
@@ -212,15 +209,11 @@ public class WelcomeController {
 
 	@GetMapping(path = "/changeStatus")
 	@ResponseBody
-	public String changeStatus(@RequestParam("registrationNumber") String registrationNumber,
+	public String changeStatus(@RequestParam("id") String id,
 			@RequestParam("status") Vehicle.Status status) {
-		List<Vehicle> vh = vehicleRepo
-				.findAllByRegistrationNumberLikeOrderByRegistrationNumberAsc(registrationNumber.toUpperCase());
-		for (Vehicle v : vh) {
-			v.status = status;
-			vehicleRepo.save(v);
-		}
-
+		Vehicle vh = vehicleRepo.findById(id).get();
+		vh.status = status;
+		vehicleRepo.save(vh);
 		return "Status Changed";
 	}
 
