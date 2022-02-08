@@ -166,6 +166,9 @@ public class WelcomeController {
 			model.put("admin", false);
 		}
 
+		List<String> agents = vehicleRepo.findDistinctAgent();
+		model.put("agents", agents);
+
 		return "delete";
 	}
 
@@ -231,8 +234,10 @@ public class WelcomeController {
 
 	@GetMapping(path = "/deleteAll")
 	@ResponseBody
-	public String deleteAll() {
-		vehicleRepo.deleteAll();
+	public String deleteAll(@RequestParam("agent") String agent) {
+		
+		System.out.println(agent);
+		vehicleRepo.deleteAllByAgent(agent);;
 		return "Successfully deleted all entries";
 	}
 

@@ -4,6 +4,7 @@ import info.kalyan.krishi.pojos.Vehicle;
 
 import java.util.List;
 
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +16,8 @@ public interface VehicleRepository extends MongoRepository<Vehicle, String> {
 
     List<Vehicle> findAllByStatusIn(List<Vehicle.Status> status);
 
+    void deleteAllByAgent(String agent);
+
+    @Aggregation(pipeline = { "{ '$group': { '_id' : '$agent' } }" })
+    List<String> findDistinctAgent();
 }

@@ -11,6 +11,14 @@
 				<!-- responsive equal width cols, can be sm, md, lg, or xl -->
 				<form>
 					<div class="col-md-12">
+						<div class="form-group col-md-6">
+							<label for="agent">Agent</label>
+							<select id="agent" class="form-control">
+								{{#agents}}
+								<option value="{{.}}">{{.}}</option>
+								{{/agents}}
+							</select>
+						</div>
 						<div class="form-check">
 							<input type="checkbox" class="form-check-input" id="confirm" onchange="fun_confirm();">
 							<label class="form-check-label" for="confirm">I understand that all car numbers will be deleted!</label>

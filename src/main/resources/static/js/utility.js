@@ -178,7 +178,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: "GET",
-            url: "/deleteAll",
+            url: "/deleteAll?agent="+$('#agent').val(),
             success: function (data) {
                 $('#msg').html(data);
             },
