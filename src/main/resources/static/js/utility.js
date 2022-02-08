@@ -23,6 +23,7 @@ Upload.prototype.getName = function () {
 Upload.prototype.doUpload = function () {
     var that = this;
     var formData = new FormData();
+    $('#upload').off('click');
 
     // add assoc key values, this will be posts values
     formData.append("file", this.file, this.getName());
@@ -67,6 +68,13 @@ Upload.prototype.progressHandling = function (event) {
 };
 // Upload class ends here
 
+function fun_confirm() {
+    if($('#confirm').is(":checked")) {
+        $('#delete').removeClass('d-none');
+    } else {
+        $('#delete').addClass('d-none');
+    }
+}
 
 function fetchAccountDetail(id) {
     $('#nav-profile-tab').trigger('click');
@@ -162,6 +170,24 @@ $(document).ready(function () {
     });
 
     $("#formPayment").hide();
+    
+    $('#delete').click(function (e) {
+
+        e.preventDefault();
+        $('#delete').off('click');
+
+        $.ajax({
+            type: "GET",
+            url: "/deleteAll",
+            success: function (data) {
+                $('#msg').html(data);
+            },
+            contentType: "application/json"
+        });
+
+    });
+
+
     // Listen to click event on the submit button
     $('#button').click(function (e) {
 

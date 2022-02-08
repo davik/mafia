@@ -157,6 +157,18 @@ public class WelcomeController {
 		return "upload";
 	}
 
+	@GetMapping(path = "/delete")
+	public String delete(Map<String, Object> model, HttpServletRequest request) {
+		populateCommonPageFields(model, request);
+		if (request.getRemoteUser().equals("admin")) {
+			model.put("admin", true);
+		} else {
+			model.put("admin", false);
+		}
+
+		return "delete";
+	}
+
 	@PostMapping(value = "/uploadFile")
 	@ResponseBody
 	public String uploadFile(@RequestParam("file") MultipartFile file)
@@ -215,6 +227,13 @@ public class WelcomeController {
 		vh.status = status;
 		vehicleRepo.save(vh);
 		return "Status Changed";
+	}
+
+	@GetMapping(path = "/deleteAll")
+	@ResponseBody
+	public String deleteAll() {
+		vehicleRepo.deleteAll();
+		return "Successfully deleted all entries";
 	}
 
 	// test 5xx errors
