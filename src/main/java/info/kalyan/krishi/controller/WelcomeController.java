@@ -136,11 +136,6 @@ public class WelcomeController {
 	@GetMapping(path = "/")
 	public String welcome(Map<String, Object> model, HttpServletRequest request) {
 		populateCommonPageFields(model, request);
-		if (request.getRemoteUser().equals("admin")) {
-			model.put("admin", true);
-		} else {
-			model.put("admin", false);
-		}
 
 		return "welcome";
 	}
@@ -623,7 +618,7 @@ public class WelcomeController {
 	public void populateCommonPageFields(Map<String, Object> model, HttpServletRequest request) {
 		model.put("title", title);
 		model.put("message", message);
-		model.put("user", request.getRemoteUser());
+		model.put("user", "Manthan");
 	}
 
 	@GetMapping(value = "/stockReport")

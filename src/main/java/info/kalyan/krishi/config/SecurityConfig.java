@@ -19,12 +19,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-				.antMatchers("/login", "/error", "/css/main.css", "/js/utility.js", "/css/fstdropdown.css",
-						"/js/fstdropdown.js")
-				.permitAll().antMatchers("/**").authenticated().and().formLogin().loginPage("/login").permitAll().and()
-				.logout().clearAuthentication(true).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID").permitAll();
+		// http.authorizeRequests()
+		// 		.antMatchers("/login", "/error", "/css/main.css", "/js/utility.js", "/css/fstdropdown.css",
+		// 				"/js/fstdropdown.js")
+		// 		.permitAll().antMatchers("/**").authenticated().and().formLogin().loginPage("/login").permitAll().and()
+		// 		.logout().clearAuthentication(true).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+		// 		.logoutSuccessUrl("/login").invalidateHttpSession(true).deleteCookies("JSESSIONID").permitAll();
 	}
 
 	@Autowired
