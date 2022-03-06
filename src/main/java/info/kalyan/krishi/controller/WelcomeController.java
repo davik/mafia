@@ -143,11 +143,11 @@ public class WelcomeController {
 	@GetMapping(path = "/upload")
 	public String upload(Map<String, Object> model, HttpServletRequest request) {
 		populateCommonPageFields(model, request);
-		if (request.getRemoteUser().equals("admin")) {
-			model.put("admin", true);
-		} else {
-			model.put("admin", false);
-		}
+		// if (request.getRemoteUser().equals("admin")) {
+		// 	model.put("admin", true);
+		// } else {
+		// 	model.put("admin", false);
+		// }
 
 		return "upload";
 	}
@@ -155,11 +155,11 @@ public class WelcomeController {
 	@GetMapping(path = "/delete")
 	public String delete(Map<String, Object> model, HttpServletRequest request) {
 		populateCommonPageFields(model, request);
-		if (request.getRemoteUser().equals("admin")) {
-			model.put("admin", true);
-		} else {
-			model.put("admin", false);
-		}
+		// if (request.getRemoteUser().equals("admin")) {
+		// 	model.put("admin", true);
+		// } else {
+		// 	model.put("admin", false);
+		// }
 
 		List<String> agents = vehicleRepo.findDistinctAgent();
 		model.put("agents", agents);
